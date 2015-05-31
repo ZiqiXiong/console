@@ -21,3 +21,19 @@ i {
     font-size: 0.8em;
     font-style: normal;
 }
+
+span.red {
+    color:red;
+}
+
+span.green {
+    color:limegreen;
+}
+
+span.blue {
+    color:deepskyblue;
+}
+
+span.yellow{
+    color:yellow;
+}
