@@ -1,22 +1,37 @@
 from django.db import models
 from datetime import datetime
+from django.core.urlresolvers import reverse
 
 # Create your models here.
 
-class Section(models.Model):
+class Folder(models.Model):
     name = models.CharField(max_length=50)
+    parent = models.ForeignKey('self', null=True)
+
+    def __str__(self):
+        return self.name
+
+
 
 class Article(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
-    section = models.ForeignKey(Section, related_name='articles')
+    folder = models.ForeignKey(Folder)
     date = models.DateTimeField(default=datetime.now)
 
-class Album(models.Model):
-    title = models.CharField(max_length=200)
-    date = models.DateTimeField(default=datetime.now)
+    def __str__(self):
+        return self.title
+
+    def get_url(self):
+        return reverse('article',kwargs={'pk':self.id})
 
 class Photo(models.Model):
-    caption = models.CharField(max_length=200)
+    title = models.CharField(max_length=200)
     date = models.DateTimeField(default=datetime.now)
-    album = models.ForeignKey(Album,related_name='photos')
+    folder = models.ForeignKey(Folder)
+
+    def __str__(self):
+        return self.title
+
+    def get_url(self):
+        return reverse('article',kwargs={'pk':self.id})
