@@ -10,8 +10,6 @@ def index(request):
 def welcome(request):
     folder = Folder.objects.get(name="ZQ's Website")
     data = folder_content(folder)
-    data['text'] = "Hello! I am Ziqi Xiong, and this is my personal website. You can explore this website using " \
-                   "basic Linux commands. Type 'help' for instructions."
     return HttpResponse(json.dumps(data), content_type='application/json')
 
 def article(request,pk):
@@ -20,7 +18,10 @@ def article(request,pk):
 def image(request,pk):
     return
 
-
+def change_dir(request):
+    folder = Folder.objects.get(name=request.GET.get('destination'))
+    data = folder_content(folder)
+    return HttpResponse(json.dumps(data), content_type='application/json')
 
 #helper functions
 def article_to_file(article):
@@ -39,7 +40,7 @@ def folder_content(folder):
     articles = folder.article_set.all()
     photos = folder.photo_set.all()
     data = dict()
-    data['new_files'], data['new_folders'],data['text'] = [], [], ''
+    data['new_files'], data['new_folders'],data['text'] = [], [], folder.helper_text
     for f in folders:
         data['new_folders'].append(folder_to_file(f))
     for a in articles:

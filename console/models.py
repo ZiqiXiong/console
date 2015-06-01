@@ -6,7 +6,8 @@ from django.core.urlresolvers import reverse
 
 class Folder(models.Model):
     name = models.CharField(max_length=50)
-    parent = models.ForeignKey('self', null=True)
+    parent = models.ForeignKey('self', null=True, blank=True)
+    helper_text = models.TextField(null=True)
 
     def __str__(self):
         return self.name

@@ -1,6 +1,8 @@
 from console.models import Article, Photo, Folder
 
-folder1 = Folder(name="ZQ's Website")
+text="Hello! I am Ziqi Xiong, and this is my personal website. You can explore this website using " \
+                   "basic Linux commands. Type 'help' for instructions."
+folder1 = Folder(name="ZQ's Website",helper_text=text)
 folder1.save()
 
 folder2 = Folder(name='portfolio',parent=folder1)

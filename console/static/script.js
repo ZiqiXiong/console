@@ -28,7 +28,7 @@ $(document).ready(function(){
         if(e.keyCode === 9) {
             e.preventDefault();
             var remnant = textarea.val().split(' ')[textarea.val().split(' ').length-1];
-            var suggestion = search_in_folder(remnant,folders,files);
+            var suggestion = search_in_folder(remnant);
             if(suggestion) {
                 textarea.val(textarea.val().substring(0,textarea.val().length - remnant.length))
                 textarea.val(textarea.val() + suggestion);
@@ -69,14 +69,15 @@ $(document).ready(function(){
     function change_dir(destination){
         $.ajax({
             url:'change_dir/',
-            data:{current_folder:address[address.length-1]},
+            data:{destination:destination},
             success:function(data){
-                address.push(destination);
                 folders = data.new_folders;
                 files = data.new_files;
+                newline();
             },
             error:function(){
                 console_ul.append('<li><i>Error occurred. Contact ZQ at ziqi.xiong@pomona.edu</i></li>');
+                address.pop();
                 newline();
             }
         })
@@ -112,30 +113,33 @@ $(document).ready(function(){
 
     //helper functions
 
-    function search_in_folder(str,list1,list2){
+    function search_in_folder(str){
         var have_found_one = false;
         var candidate = null;
-        for (i in list1){
-            if (list1[i].indexOf(str)==0){
+        for (i in folders){
+            if (folders[i].name.indexOf(str)==0){
                 if (have_found_one){
                     return null;
                 }else{
-                    candidate = list1[i];
+                    candidate = folders[i];
                     have_found_one = true;
                 }
             }
         }
-        for (i in list2){
-            if (list2[i].indexOf(str)==0){
+        for (i in files){
+            if (files[i].title.indexOf(str)==0){
                 if (have_found_one){
                     return null;
                 }else{
-                    candidate = list2[i];
+                    candidate = files[i];
                     have_found_one = true;
                 }
             }
         }
-        return candidate;
+        if (candidate.name)
+            return candidate.name;
+        else
+            return candidate.title;
     }
 
     function readline(str) {
@@ -147,10 +151,11 @@ $(document).ready(function(){
             show_files();
         } else if(str.substring(0,3)=='cd ' || str.substring(0,2)=='CD '){
             var destination = str.substring(3,str.length).trim();
-            if (folders.indexOf(destination)==-1){
+            if (folder_content_str().indexOf(destination)==-1){
                 console_ul.append('<li><i>"'+destination+'" is not in this folder.</i></li>');
                 newline();
             }else{
+                address.push(destination);
                 change_dir(destination);
             }
         }else{
@@ -170,8 +175,16 @@ $(document).ready(function(){
                 str += '<span class="blue">' + address[i] + '</span>' + '/';
             else
                 str += '<span class="yellow">' + address[i] + '</span>' + '/';
-        }
-        return str;
+        } return str;
+    }
+
+    function folder_content_str(){
+        str=[];
+        for (i in folders){
+            str.push(folders[i].name);
+        } for(i in files){
+            str.push(files[i],title);
+        } return str;
     }
 
     function newline(){
