@@ -67,20 +67,30 @@ $(document).ready(function(){
     }
 
     function change_dir(destination){
-        $.ajax({
-            url:'change_dir/',
-            data:{destination:destination},
-            success:function(data){
-                folders = data.new_folders;
-                files = data.new_files;
-                newline();
-            },
-            error:function(){
-                console_ul.append('<li><i>Error occurred. Contact ZQ at ziqi.xiong@pomona.edu</i></li>');
+        if (folder_content_str().indexOf(destination)!=-1 || destination=='..'){
+            if (destination == '..')
                 address.pop();
-                newline();
-            }
-        })
+            else
+                address.push(destination);
+            $.ajax({
+                url:'change_dir/',
+                data:{destination:address[address.length-1]},
+                success:function(data){
+                    folders = data.new_folders;
+                    files = data.new_files;
+                    newline();
+                },
+                error:function(){
+                    console_ul.append('<li><i>Error occurred. Contact ZQ at ziqi.xiong@pomona.edu</i></li>');
+                    address.pop();
+                    newline();
+                }
+            })
+        }else{
+            console_ul.append('<li><i>"'+destination+'" is not in this folder.</i></li>');
+            newline();
+
+        }
     }
 
     function clear(destination){
@@ -151,13 +161,7 @@ $(document).ready(function(){
             show_files();
         } else if(str.substring(0,3)=='cd ' || str.substring(0,2)=='CD '){
             var destination = str.substring(3,str.length).trim();
-            if (folder_content_str().indexOf(destination)==-1){
-                console_ul.append('<li><i>"'+destination+'" is not in this folder.</i></li>');
-                newline();
-            }else{
-                address.push(destination);
-                change_dir(destination);
-            }
+            change_dir(destination);
         }else{
             console_ul.append('<li><i>"'+str+'" is not recognized as a legal command.</i></li>');
             newline();
