@@ -6,6 +6,7 @@ $(document).ready(function(){
     var box = $('#box');
     var address = ["ZQ's Website"];
     var console_ul = $('#console_ul');
+    var current_line = -1;
     var folders=[];
     var files = [];
 
@@ -27,7 +28,13 @@ $(document).ready(function(){
     textarea.keydown(function(e) {
         if(e.keyCode==37 || e.keyCode==39){
             e.preventDefault();
-        } else if(e.keyCode === 9) {
+        } else if(e.keyCode==38){
+            e.preventDefault();
+            line_move(-1);
+        } else if(e.keyCode==40){
+            e.preventDefault();
+            line_move(1);
+        }else if(e.keyCode === 9) {
             e.preventDefault();
             var remnant = textarea.val().split(' ')[textarea.val().split(' ').length-1];
             var suggestion = search_in_folder(remnant);
@@ -55,6 +62,18 @@ $(document).ready(function(){
     newline();
 
     //actions
+
+    function line_move(step){
+        if( (step<0 && current_line<1)||
+            (step>1 && current_line > $('.input_line').length-1)){
+            return
+        }else{
+            current_line = current_line + step;
+            var content = $($('.input_line')[current_line]).children().filter('.input_content');
+            textarea.val($(content).text())
+            box.text($(content).text());
+        }
+    }
 
     function show_files(){
         console_ul.append('<li>');
@@ -125,7 +144,8 @@ $(document).ready(function(){
                     "cd &#060directory name&#062- change folder",
                     'clear - clear everything on the screen',
                     'view &#060file name&#062 - view articles and images',
-                    '&#060tab&#062 - auto-complete commands',]
+                    '&#060tab&#062 - auto-complete commands',
+                    '&#060up/down&#062 - scroll through the previous commands executed']
         for (i in texts) {
             system_remind(texts[i])
         }
@@ -223,9 +243,10 @@ $(document).ready(function(){
         $('.indicator').remove();
         textarea.val('');
         box.removeAttr('id');
-        console_ul.append('<li class="input_line">'+address_str()+'&#062 ' + '<span id="box"></span>' +
-                        '<span class="indicator">_</span></li>');
+        console_ul.append('<li class="input_line">'+address_str()+'&#062 ' + '<span class="input_content" id="box">' +
+                        '</span><span class="indicator">_</span></li>');
         box = $('#box');
+        current_line = $('.input_line').length - 1;
     }
 
     function findFile(str){
