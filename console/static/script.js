@@ -18,9 +18,9 @@ $(document).ready(function(){
 
     textarea.keyup(function(event) {
             if(event.keyCode==13){
+                event.preventDefault();
                 readline(textarea.val());
-            }
-            box.text(textarea.val());
+            } box.text(textarea.val());
         }
     )
 
@@ -48,30 +48,38 @@ $(document).ready(function(){
         }
     },500)
 
+
     connect();
-
-
 
     //actions
 
     function show_files(){
         console_ul.append('<li>');
         for (i in folders) {
-            console_ul.append('<span class="pink"><i>' + folders[i].name + '</i></span>&nbsp&nbsp');
+            console_ul.append('<span class="blue"><i>' + folders[i].name + '</i></span>&nbsp&nbsp');
         }
         for (i in files){
-            console_ul.append('<span class="gold"><i>' + files[i].title + '</i></span>&nbsp&nbsp');
+            console_ul.append('<a href="javascript:void(0)" class="file_link"' +
+                                'title="'+files[i].title+'"><span class="gold"><i>' +
+                                files[i].title + '</i></span></a>&nbsp&nbsp');
+            $('.file_link').click(function(){
+                box.text('view '+$(this).attr('title'))
+                view($(this).attr('title'));
+            })
         }
         console_ul.append('</li>');
         newline();
     }
 
     function change_dir(destination){
-        if (folder_content_str().indexOf(destination)!=-1 || destination=='..'){
-            if (destination == '..')
+        if (findFolder(destination) || destination=='..'){
+            if (destination == '..') {
+                if (address.length == 1) {
+                    newline();
+                    return;
+                }
                 address.pop();
-            else
-                address.push(destination);
+            } else {address.push(destination);}
             $.ajax({
                 url:'change_dir/',
                 data:{destination:address[address.length-1]},
@@ -79,17 +87,15 @@ $(document).ready(function(){
                     folders = data.new_folders;
                     files = data.new_files;
                     newline();
-                },
-                error:function(){
-                    console_ul.append('<li><i>Error occurred. Contact ZQ at ziqi.xiong@pomona.edu</i></li>');
+                }, error:function(){
+                    system_remind('Error occurred. Contact ZQ at ziqi.xiong@pomona.edu');
                     address.pop();
                     newline();
                 }
             })
         }else{
-            console_ul.append('<li><i>"'+destination+'" is not in this folder.</i></li>');
+            system_remind('"'+destination+'" is not a directory or not in this directory.');
             newline();
-
         }
     }
 
@@ -105,20 +111,40 @@ $(document).ready(function(){
                 console_ul.prepend('<li><i>'+data.text+'</i></li>');
                 folders = data.new_folders;
                 files = data.new_files;
-            },
-            error: function(){
-                console_ul.prepend('<li><i>Error occurred. Contact ZQ at ziqi.xiong@pomona.edu</i></li>');
+            }, error: function(){
+                system_remind('Error occurred. Contact ZQ at ziqi.xiong@pomona.edu');
             }
         })
     }
 
     function help(){
-        var texts = ["ls - list files and directories under this folder"," cd - change folder",
-                    'clear - clear everything on the screen','&#060tab&#062 - auto-complete commands']
+        var texts = ["ls - list files and directories under this folder",
+                    "cd &#060directory name&#062- change folder",
+                    'clear - clear everything on the screen',
+                    'view &#060file name&#062 - view articles and images',
+                    '&#060tab&#062 - auto-complete commands',]
         for (i in texts) {
-            console_ul.append('<li><i>' + texts[i] + '</i></li>')
+            system_remind(texts[i])
         }
          newline();
+    }
+
+    function view(name){
+        var file = findFile(name);
+        if (file){
+            $.ajax({
+                url: file.url,
+                success: function(html){
+                    console_ul.append('<li>'+html+'</li>');
+                    newline();
+                }, error: function(){
+                    system_remind('Error occurred. Contact ZQ at ziqi.xiong@pomona.edu');
+                }
+            })
+        } else{
+            system_remind('"'+name+'" cannot be found in this directory.');
+            newline();
+        }
     }
 
     //helper functions
@@ -135,8 +161,7 @@ $(document).ready(function(){
                     have_found_one = true;
                 }
             }
-        }
-        for (i in files){
+        }for (i in files){
             if (files[i].title.indexOf(str)==0){
                 if (have_found_one){
                     return null;
@@ -155,15 +180,16 @@ $(document).ready(function(){
     function readline(str) {
         if (str.substring(0, 4) == 'help' || str.substring(0, 4) == 'HELP') {
             help();
+        } else if (str.substring(0,5)=='view ') {
+            view(str.substring(5,str.length).trim());
         } else if (str.substring(0,5)=='clear') {
             clear();
         }else if (str.substring(0, 2) == 'ls' || str.substring(0, 2) == 'LS') {
             show_files();
-        } else if(str.substring(0,3)=='cd ' || str.substring(0,2)=='CD '){
-            var destination = str.substring(3,str.length).trim();
-            change_dir(destination);
+        } else if(str.substring(0,3)=='cd ' || str.substring(0,3)=='CD '){
+            change_dir(str.substring(3,str.length).trim());
         }else{
-            console_ul.append('<li><i>"'+str+'" is not recognized as a legal command.</i></li>');
+            system_remind('"'+str+'" is not recognized as a legal command.');
             newline();
         }
     }
@@ -182,24 +208,32 @@ $(document).ready(function(){
         } return str;
     }
 
-    function folder_content_str(){
-        str=[];
-        for (i in folders){
-            str.push(folders[i].name);
-        } for(i in files){
-            str.push(files[i],title);
-        } return str;
+    function findFolder(str){
+        for(i in folders){
+            if (folders[i].name == str){
+                return folders[i];
+            }
+        } return null;
     }
 
     function newline(){
         $('.indicator').remove();
         textarea.val('');
         box.removeAttr('id');
-        console_ul.append('<li>'+address_str()+'&#062 ' +
-                        '<span id="box"></span>' +
+        console_ul.append('<li>'+address_str()+'&#062 ' + '<span id="box"></span>' +
                         '<span class="indicator">_</span></li>');
-
         box = $('#box');
-        return;
+    }
+
+    function findFile(str){
+        for(i in files){
+            if (files[i].title == str){
+                return files[i];
+            }
+        } return null;
+    }
+
+    function system_remind(str){
+        console_ul.append('<li><i>'+str+'</i></li>')
     }
 })

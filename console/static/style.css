@@ -45,3 +45,7 @@ span.gold{
 span.pink{
     color:peachpuff;
 }
+
+.file_link{
+    text-decoration: none;
+}

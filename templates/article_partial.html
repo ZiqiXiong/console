@@ -1,0 +1,14 @@
+<style>
+    article{
+        width:60%;
+        margin:auto;
+        margin-top: 1em;
+    }
+</style>
+<article>
+    <h3>{{ article.title }}</h3>
+    <p>{{ article.date }}</p>
+    <div class="article_content">
+        {{ article.content|safe }}
+    </div>
+</article>

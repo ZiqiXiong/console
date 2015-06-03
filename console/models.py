@@ -47,7 +47,7 @@ class Photo(models.Model):
         return self.title
 
     def get_url(self):
-        return reverse('article',kwargs={'pk':self.id})
+        return reverse('image',kwargs={'pk':self.id})
 
         # Adapted from http://snipt.net/danfreak/generate-thumbnails-in-django-with-pil/
     def create_thumbnail(self):

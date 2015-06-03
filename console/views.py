@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 import json
-from console.models import Folder
+from console.models import Folder, Article, Photo
 # Create your views here.
 
 def index(request):
@@ -13,10 +13,12 @@ def welcome(request):
     return HttpResponse(json.dumps(data), content_type='application/json')
 
 def article(request,pk):
-    return
+    article = Article.objects.get(pk=pk)
+    return render(request,'article_partial.html',{'article':article})
 
 def image(request,pk):
-    return
+    photo = Photo.objects.get(pk=pk)
+    return render(request,'photo_partial.html',{'photo':photo})
 
 def change_dir(request):
     folder = Folder.objects.get(name=request.GET.get('destination'))
@@ -28,6 +30,7 @@ def article_to_file(article):
     obj = dict()
     obj['title'] = article.title
     obj['url'] = article.get_url()
+    obj['type'] = article.__class__.__name__
     return obj
 
 def folder_to_file(folder):
