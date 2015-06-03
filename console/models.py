@@ -9,6 +9,11 @@ class Folder(models.Model):
     parent = models.ForeignKey('self', null=True, blank=True)
     helper_text = models.TextField(null=True)
 
+    def get_path(self):
+        if self.parent:
+            return self.parent.get_path()+self.name+'/'
+        return '/'
+
     def __str__(self):
         return self.name
 
@@ -17,11 +22,14 @@ class Folder(models.Model):
 class Article(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
-    folder = models.ForeignKey(Folder)
+    parent = models.ForeignKey(Folder)
     date = models.DateTimeField(default=datetime.now)
 
     def __str__(self):
         return self.title
+
+    def get_path(self):
+        return self.parent.get_path()+self.title
 
     def get_url(self):
         return reverse('article',kwargs={'pk':self.id})
@@ -32,6 +40,9 @@ class Comment(models.Model):
     article = models.ForeignKey(Article,null=True,blank=True)
     date = models.DateTimeField(default=datetime.now)
 
+    def get_path(self):
+        return self.parent.get_path()+self.title
+
     def __str__(self):
         return self.author+"'s comment"
 
@@ -39,7 +50,7 @@ class Comment(models.Model):
 class Photo(models.Model):
     title = models.CharField(max_length=200)
     date = models.DateTimeField(default=datetime.now)
-    folder = models.ForeignKey(Folder)
+    parent = models.ForeignKey(Folder)
     image = models.ImageField(upload_to='photo/')
     thumbnail = models.ImageField(upload_to='thumbs/',blank=True,null=True)
 

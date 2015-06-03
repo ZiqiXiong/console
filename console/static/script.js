@@ -25,7 +25,9 @@ $(document).ready(function(){
     )
 
     textarea.keydown(function(e) {
-        if(e.keyCode === 9) {
+        if(e.keyCode==37 || e.keyCode==39){
+            e.preventDefault();
+        } else if(e.keyCode === 9) {
             e.preventDefault();
             var remnant = textarea.val().split(' ')[textarea.val().split(' ').length-1];
             var suggestion = search_in_folder(remnant);
@@ -50,13 +52,14 @@ $(document).ready(function(){
 
 
     connect();
+    newline();
 
     //actions
 
     function show_files(){
         console_ul.append('<li>');
         for (i in folders) {
-            console_ul.append('<span class="blue"><i>' + folders[i].name + '</i></span>&nbsp&nbsp');
+            console_ul.append('<span class="blue"><i class="fa fa-angle-right"></i><i>' + folders[i].name + '</i></span>&nbsp&nbsp');
         }
         for (i in files){
             console_ul.append('<a href="javascript:void(0)" class="file_link"' +
@@ -220,7 +223,7 @@ $(document).ready(function(){
         $('.indicator').remove();
         textarea.val('');
         box.removeAttr('id');
-        console_ul.append('<li>'+address_str()+'&#062 ' + '<span id="box"></span>' +
+        console_ul.append('<li class="input_line">'+address_str()+'&#062 ' + '<span id="box"></span>' +
                         '<span class="indicator">_</span></li>');
         box = $('#box');
     }
