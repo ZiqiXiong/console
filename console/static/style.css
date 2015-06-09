@@ -6,11 +6,14 @@ body{
     margin: 1em;
 }
 
-#ta {
+@media screen and (min-device-width: 480px) and (orientation: landscape) {
+ #ta {
     position: absolute;
     left: -9999px;
     clip: rect(1px,1px,1px,1px);
 }
+}
+
 
 li {
     list-style-type: none;

@@ -18,7 +18,6 @@ class Folder(models.Model):
         return self.name
 
 
-
 class Article(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
