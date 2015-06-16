@@ -26,10 +26,14 @@ def change_dir(request):
     return HttpResponse(json.dumps(data), content_type='application/json')
 
 #helper functions
-def article_to_file(article):
+def article_to_file(article, is_photo = False):
     obj = dict()
     obj['title'] = article.title
     obj['url'] = article.get_url()
+    if is_photo:
+        obj['icon'] ="<i class='fa fa-file-image-o'></i>"
+    else:
+        obj['icon'] ="<i class='fa fa-file-text-o'></i>"
     obj['type'] = article.__class__.__name__
     return obj
 
@@ -49,6 +53,6 @@ def folder_content(folder):
     for a in articles:
         data['new_files'].append(article_to_file(a))
     for p in photos:
-        data['new_files'].append(article_to_file(p))
+        data['new_files'].append(article_to_file(p,True))
     return data
 
