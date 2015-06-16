@@ -7,7 +7,7 @@ from django.core.urlresolvers import reverse
 class Folder(models.Model):
     name = models.CharField(max_length=50)
     parent = models.ForeignKey('self', null=True, blank=True)
-    helper_text = models.TextField(null=True)
+    helper_text = models.TextField(null=True, blank=True)
 
     def get_path(self):
         if self.parent:
