@@ -1,7 +1,8 @@
 from console.models import Article, Photo, Folder
 
 text="Hello, this is Ziqi Xiong's personal website. You can explore this site using " \
-                   "basic Linux commands. Type 'help' for instructions."
+                   "basic Linux commands. Type 'help' for instructions. Contact me at ziqi.xiong@pomona.edu " \
+                   "for further questions."
 folder1 = Folder(name="ZQ's Website",helper_text=text)
 folder1.save()
 
