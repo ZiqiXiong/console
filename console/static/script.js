@@ -78,7 +78,7 @@ $(document).ready(function(){
     function show_files(){
         console_ul.append('<li>');
         for (i in folders) {
-            console_ul.append('<span class="blue"><i class="fa fa-angle-right"></i><i>' + folders[i].name + '</i></span>&nbsp&nbsp');
+            console_ul.append('<i>' + folders[i].name + '</i></span>&nbsp&nbsp');
         }
         for (i in files){
             console_ul.append('<a href="javascript:void(0)" class="file_link"' +
