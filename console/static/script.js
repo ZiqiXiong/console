@@ -84,11 +84,11 @@ $(document).ready(function(){
             console_ul.append('<a href="javascript:void(0)" class="file_link"' +
                                 'title="'+files[i].title+'"><span class="gold"><i>' +
                                 files[i].title + "</i>"+files[i].icon+"</span></a>&nbsp&nbsp");
-            $('.file_link').click(function(){
-                box.text('view '+$(this).attr('title'))
-                view($(this).attr('title'));
-            })
         }
+        $('.file_link').click(function(){
+            box.text('view '+$(this).attr('title'))
+             view($(this).attr('title'));
+        })
         console_ul.append('</li>');
         newline();
     }
@@ -110,6 +110,7 @@ $(document).ready(function(){
                 success:function(data){
                     folders = data.new_folders;
                     files = data.new_files;
+                    console.log(files);
                     newline();
                 }, error:function(){
                     system_remind('Error occurred. Contact ZQ at ziqi.xiong@pomona.edu');
