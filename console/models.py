@@ -21,7 +21,7 @@ class Folder(models.Model):
 class Article(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
-    parent = models.ForeignKey(Folder)
+    parent = models.ForeignKey(Folder,blank=True,null=True)
     date = models.DateTimeField(default=datetime.now)
 
     def __str__(self):
@@ -49,7 +49,7 @@ class Comment(models.Model):
 class Photo(models.Model):
     title = models.CharField(max_length=200)
     date = models.DateTimeField(default=datetime.now)
-    parent = models.ForeignKey(Folder)
+    parent = models.ForeignKey(Folder,blank=True,null=True)
     image = models.ImageField(upload_to='photo/')
     thumbnail = models.ImageField(upload_to='thumbs/',blank=True,null=True)
 
