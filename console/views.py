@@ -43,9 +43,9 @@ def folder_to_file(folder):
     return obj
 
 def folder_content(folder):
-    folders = folder.folder_set.all()
-    articles = folder.article_set.all()
-    photos = folder.photo_set.all()
+    folders = folder.folder_set.order_by('name')
+    articles = folder.article_set.order_by('title')
+    photos = folder.photo_set.order_by('title')
     data = dict()
     data['new_files'], data['new_folders'],data['text'] = [], [], folder.helper_text
     for f in folders:
