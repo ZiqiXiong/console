@@ -7,7 +7,9 @@
 </style>
 <article>
     <h3>{{ article.title|safe }}</h3>
-    <p>{{ article.date }}</p>
+    {% if not article.timeless %}
+        <p>{{ article.date }}</p>
+    {% endif %}
     <div class="article_content">
         {{ article.content|safe }}
     </div>

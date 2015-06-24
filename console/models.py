@@ -21,6 +21,7 @@ class Folder(models.Model):
 class Article(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
+    timeless = models.BooleanField(default=True)
     parent = models.ForeignKey(Folder,blank=True,null=True)
     date = models.DateTimeField(default=datetime.now)
 
@@ -45,6 +46,11 @@ class Comment(models.Model):
     def __str__(self):
         return self.author+"'s comment"
 
+class File(models.Model):
+    created_date = models.DateTimeField(default=datetime.now)
+    file = models.FileField(upload_to='archives/')
+    def __str__(self):
+        return os.path.basename(self.file.name)
 
 class Photo(models.Model):
     title = models.CharField(max_length=200)
