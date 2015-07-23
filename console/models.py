@@ -31,6 +31,9 @@ class Article(models.Model):
     def get_path(self):
         return self.parent.get_path()+self.title
 
+    def is_public(self):
+        return self.parent is not None
+
     def get_url(self):
         return reverse('article',kwargs={'pk':self.id})
 

@@ -14,7 +14,9 @@ def welcome(request):
 
 def article(request,pk):
     article = Article.objects.get(pk=pk)
-    return render(request,'article_partial.html',{'article':article})
+    if article.is_public():
+        return render(request,'article_partial.html',{'article':article})
+    return HttpResponse("This article is not public.")
 
 def image(request,pk):
     photo = Photo.objects.get(pk=pk)
