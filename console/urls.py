@@ -7,5 +7,5 @@ urlpatterns = patterns('',
                        url(r'^change_dir/$',views.change_dir,name='change_dir'),
                        url(r'^article/(?P<pk>\d+)/$',views.article,name='article'),
                        url(r'^image/(?P<pk>\d+)/$',views.image,name='image'),
-                       url(r'^file/(?P<pk>\d+)/$',views.file)
+                       
 )
