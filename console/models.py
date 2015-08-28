@@ -1,5 +1,6 @@
 from django.db import models
 from datetime import datetime
+import os
 from django.core.urlresolvers import reverse
 
 # Create your models here.
@@ -53,7 +54,7 @@ class File(models.Model):
     created_date = models.DateTimeField(default=datetime.now)
     file = models.FileField(upload_to='archives/')
     def __str__(self):
-        return os.path.basename(self.file.name)
+        return self.file.url
 
 class Photo(models.Model):
     title = models.CharField(max_length=200)
