@@ -6,6 +6,7 @@ from django import forms
 
 admin.site.register(Folder)
 admin.site.register(Photo)
+admin.site.register(File)
 
 class ArticleAdmin(admin.ModelAdmin):
     formfield_overrides = { models.TextField: {'widget': forms.Textarea(attrs={'class':'ckeditor'})}, }
