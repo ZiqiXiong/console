@@ -204,6 +204,7 @@ $(document).ready(function(){
     }
 
     function readline(str) {
+        str = str.trim();
         if (str.substring(0, 4).toLowerCase() == 'help') {
             help();
         } else if (str.substring(0,5).toLowerCase()=='view ') {
